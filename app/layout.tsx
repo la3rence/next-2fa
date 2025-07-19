@@ -34,6 +34,7 @@ export default function RootLayout({
       <head>
         <meta name="robots" content="noindex, nofollow" />
         <meta name="googlebot" content="noindex, nofollow" />
+        <link rel="icon" href="https://icon.lawrenceli.me/🛡️" />
       </head>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>

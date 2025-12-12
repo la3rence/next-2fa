@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button"
 import TOTPCodeDisplay from "@/components/totp-code-display"
 
 export default async function Home() {
-  const supabase = createServerComponentClient({ cookies })
+  const cookieStore = await cookies()
+  const supabase = createServerComponentClient({ cookies: () => cookieStore })
   const {
     data: { session },
   } = await supabase.auth.getSession()
@@ -39,4 +40,3 @@ export default async function Home() {
     </div>
   )
 }
-

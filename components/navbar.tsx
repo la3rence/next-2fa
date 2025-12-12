@@ -15,7 +15,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 export default async function Navbar() {
-  const supabase = createServerComponentClient({ cookies })
+  const cookieStore = await cookies()
+  const supabase = createServerComponentClient({ cookies: () => cookieStore })
   const {
     data: { session },
   } = await supabase.auth.getSession()
@@ -80,4 +81,3 @@ export default async function Navbar() {
     </header>
   )
 }
-

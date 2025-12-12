@@ -13,7 +13,8 @@ interface TOTPCode {
 }
 
 export async function POST(request: NextRequest) {
-  const supabase = createRouteHandlerClient({ cookies })
+  const cookieStore = await cookies()
+  const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
 
   // Check if user is authenticated
   const {
@@ -90,4 +91,3 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json({ codes })
 }
-

@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button"
 import SitesList from "@/components/sites-list"
 
 export default async function Dashboard() {
-  const supabase = createServerComponentClient({ cookies })
+  const cookieStore = await cookies()
+  const supabase = createServerComponentClient({ cookies: () => cookieStore })
   const {
     data: { session },
   } = await supabase.auth.getSession()
@@ -43,4 +44,3 @@ export default async function Dashboard() {
     </div>
   )
 }
-

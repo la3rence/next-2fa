@@ -6,7 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import SiteForm from "@/components/site-form"
 
 export default async function EditSite({ params }: { params: { id: string } }) {
-  const supabase = createServerComponentClient({ cookies })
+  const cookieStore = await cookies()
+  const supabase = createServerComponentClient({ cookies: () => cookieStore })
   const {
     data: { session },
   } = await supabase.auth.getSession()
@@ -42,4 +43,3 @@ export default async function EditSite({ params }: { params: { id: string } }) {
     </div>
   )
 }
-

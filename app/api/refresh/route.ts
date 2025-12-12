@@ -11,7 +11,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Site ID is required" }, { status: 400 })
   }
 
-  const supabase = createRouteHandlerClient({ cookies })
+  const cookieStore = await cookies()
+  const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
 
   // Check if user is authenticated
   const {
@@ -53,4 +54,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Failed to generate code" }, { status: 500 })
   }
 }
-

@@ -91,12 +91,6 @@ export default function Login() {
               <Link href="/forgot-password" className="text-primary underline-offset-4 hover:underline">
                 Forgot password?
               </Link>
-              <div>
-                Don't have an account?{" "}
-                <Link href="/register" className="text-primary underline-offset-4 hover:underline">
-                  Register
-                </Link>
-              </div>
             </div>
           </CardFooter>
         </form>
@@ -104,4 +98,3 @@ export default function Login() {
     </div>
   )
 }
-

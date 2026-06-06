@@ -70,9 +70,6 @@ export default async function Navbar() {
             <Button asChild variant="outline" size="sm">
               <Link href="/login">Login</Link>
             </Button>
-            <Button asChild size="sm">
-              <Link href="/register">Register</Link>
-            </Button>
           </div>
         )}
       </div>

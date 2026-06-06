@@ -15,7 +15,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 interface Site {
   id: string
   site_name: string
-  account_name?: string
+  account_name?: string | null
   secret: string
   color?: string
 }
@@ -51,6 +51,8 @@ export default function SiteForm({
 
     // Remove spaces from secret
     const cleanedSecret = secret.replace(/\s+/g, "")
+    const cleanedSiteName = siteName.trim()
+    const cleanedAccountName = accountName.trim()
 
     try {
       if (site) {
@@ -58,20 +60,21 @@ export default function SiteForm({
         const { error: updateError } = await supabase
           .from("totp_sites")
           .update({
-            site_name: siteName,
-            account_name: accountName || null, // Allow null for account_name
+            site_name: cleanedSiteName,
+            account_name: cleanedAccountName || null, // Allow null for account_name
             secret: cleanedSecret,
             color: color,
           })
           .eq("id", site.id)
+          .eq("user_id", userId)
 
         if (updateError) throw updateError
       } else {
         // Insert new site
         const { error: insertError } = await supabase.from("totp_sites").insert({
           user_id: userId,
-          site_name: siteName,
-          account_name: accountName || null, // Allow null for account_name
+          site_name: cleanedSiteName,
+          account_name: cleanedAccountName || null, // Allow null for account_name
           secret: cleanedSecret,
           color: color,
         })
@@ -180,4 +183,3 @@ export default function SiteForm({
     </form>
   )
 }
-

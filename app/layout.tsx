@@ -1,12 +1,9 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import Navbar from "@/components/navbar"
 import { Toaster } from "@/components/toaster"
-
-const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "TOTP Auth Manager",
@@ -30,13 +27,13 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="robots" content="noindex, nofollow" />
         <meta name="googlebot" content="noindex, nofollow" />
         <link rel="icon" href="https://icon.lawrenceli.me/🛡️" />
       </head>
-      <body className={inter.className}>
+      <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <Navbar />
           <main>{children}</main>
@@ -46,7 +43,3 @@ export default function RootLayout({
     </html>
   )
 }
-
-
-
-import './globals.css'

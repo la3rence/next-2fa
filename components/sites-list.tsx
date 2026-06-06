@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { Edit, Trash2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -22,10 +23,19 @@ import {
 interface Site {
   id: string
   site_name: string
-  account_name: string
-  secret: string
+  account_name?: string | null
   color?: string
   created_at: string
+}
+
+function formatCreatedDate(value: string) {
+  const date = new Date(value)
+
+  if (Number.isNaN(date.getTime())) {
+    return "Unknown"
+  }
+
+  return date.toISOString().slice(0, 10)
 }
 
 export default function SitesList({ sites }: { sites: Site[] }) {
@@ -69,16 +79,23 @@ export default function SitesList({ sites }: { sites: Site[] }) {
           {sites.map((site) => (
             <TableRow key={site.id}>
               <TableCell>
-                <div className="w-6 h-6 rounded-full" style={{ backgroundColor: site.color || "#7c3aed" }}></div>
+                <div
+                  className="h-6 w-6 rounded-full border border-border ring-1 ring-foreground/15 dark:ring-white/25"
+                  style={{ backgroundColor: site.color || "#7c3aed" }}
+                ></div>
               </TableCell>
               <TableCell className="font-medium">{site.site_name}</TableCell>
-              <TableCell>{site.account_name}</TableCell>
-              <TableCell>{new Date(site.created_at).toLocaleDateString()}</TableCell>
+              <TableCell>{site.account_name || <span className="text-muted-foreground">No label</span>}</TableCell>
+              <TableCell>
+                <time dateTime={site.created_at}>{formatCreatedDate(site.created_at)}</time>
+              </TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end gap-2">
-                  <Button variant="outline" size="icon" onClick={() => router.push(`/dashboard/edit/${site.id}`)}>
-                    <Edit className="h-4 w-4" />
-                    <span className="sr-only">Edit</span>
+                  <Button asChild variant="outline" size="icon">
+                    <Link href={`/dashboard/edit/${site.id}`}>
+                      <Edit className="h-4 w-4" />
+                      <span className="sr-only">Edit</span>
+                    </Link>
                   </Button>
                   <AlertDialog
                     open={siteToDelete === site.id}
@@ -125,4 +142,3 @@ export default function SitesList({ sites }: { sites: Site[] }) {
     </div>
   )
 }
-

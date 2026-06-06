@@ -1,13 +1,12 @@
 import { redirect } from "next/navigation"
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
-import { cookies } from "next/headers"
 
 import { Button } from "@/components/ui/button"
 import TOTPCodeDisplay from "@/components/totp-code-display"
+import { getTOTPCodes } from "@/lib/totp-utils"
+import { createSupabaseServerClient } from "@/lib/supabase-server"
 
 export default async function Home() {
-  const cookieStore = await cookies()
-  const supabase = createServerComponentClient({ cookies: () => cookieStore })
+  const supabase = await createSupabaseServerClient()
   const {
     data: { session },
   } = await supabase.auth.getSession()
@@ -16,7 +15,13 @@ export default async function Home() {
     redirect("/login")
   }
 
-  const { data: sites } = await supabase.from("totp_sites").select("*").eq("user_id", session.user.id)
+  const { data: sites } = await supabase
+    .from("totp_sites")
+    .select("id, site_name, account_name, color, secret")
+    .eq("user_id", session.user.id)
+    .order("site_name")
+
+  const codes = getTOTPCodes(sites || [])
 
   return (
     <div className="container max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8">
@@ -27,7 +32,7 @@ export default async function Home() {
         </Button>
       </div>
 
-      {!sites || sites.length === 0 ? (
+      {codes.length === 0 ? (
         <div className="text-center py-10">
           <p className="text-muted-foreground mb-4">You haven't added any sites yet.</p>
           <Button asChild>
@@ -35,7 +40,7 @@ export default async function Home() {
           </Button>
         </div>
       ) : (
-        <TOTPCodeDisplay initialSites={sites} />
+        <TOTPCodeDisplay initialCodes={codes} />
       )}
     </div>
   )

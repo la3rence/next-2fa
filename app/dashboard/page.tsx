@@ -1,14 +1,12 @@
 import { redirect } from "next/navigation"
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
-import { cookies } from "next/headers"
 import { Plus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import SitesList from "@/components/sites-list"
+import { createSupabaseServerClient } from "@/lib/supabase-server"
 
 export default async function Dashboard() {
-  const cookieStore = await cookies()
-  const supabase = createServerComponentClient({ cookies: () => cookieStore })
+  const supabase = await createSupabaseServerClient()
   const {
     data: { session },
   } = await supabase.auth.getSession()
@@ -19,7 +17,7 @@ export default async function Dashboard() {
 
   const { data: sites } = await supabase
     .from("totp_sites")
-    .select("*")
+    .select("id, site_name, account_name, color, created_at")
     .eq("user_id", session.user.id)
     .order("site_name")
 

@@ -1,7 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs"
-import { cookies } from "next/headers"
-import * as OTPAuth from "otpauth"
+import { getTOTPCodes } from "@/lib/totp-utils"
+import { createSupabaseRouteClient } from "@/lib/supabase-server"
 
 export async function POST(request: NextRequest) {
   const formData = await request.formData()
@@ -11,8 +10,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Site ID is required" }, { status: 400 })
   }
 
-  const cookieStore = await cookies()
-  const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
+  const supabase = await createSupabaseRouteClient()
 
   // Check if user is authenticated
   const {
@@ -25,7 +23,7 @@ export async function POST(request: NextRequest) {
   // Get the site data
   const { data: site, error } = await supabase
     .from("totp_sites")
-    .select("*")
+    .select("id, site_name, account_name, color, secret")
     .eq("id", siteId)
     .eq("user_id", session.user.id)
     .single()
@@ -34,23 +32,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Site not found" }, { status: 404 })
   }
 
-  try {
-    // Create a new TOTP object
-    const totp = new OTPAuth.TOTP({
-      issuer: site.site_name,
-      label: site.account_name || "",
-      algorithm: "SHA1",
-      digits: 6,
-      period: 30,
-      secret: OTPAuth.Secret.fromBase32(site.secret),
-    })
+  const [totpCode] = getTOTPCodes([site])
 
-    // Generate the current TOTP code
-    const code = totp.generate()
-
-    return NextResponse.json({ code })
-  } catch (error) {
-    console.error(`Error generating TOTP for ${site.site_name}:`, error)
+  if (totpCode.code === "ERROR") {
     return NextResponse.json({ error: "Failed to generate code" }, { status: 500 })
   }
+
+  return NextResponse.json({ code: totpCode.code })
 }

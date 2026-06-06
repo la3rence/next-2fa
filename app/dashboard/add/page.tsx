@@ -1,13 +1,11 @@
 import { redirect } from "next/navigation"
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
-import { cookies } from "next/headers"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import SiteForm from "@/components/site-form"
+import { createSupabaseServerClient } from "@/lib/supabase-server"
 
 export default async function AddSite() {
-  const cookieStore = await cookies()
-  const supabase = createServerComponentClient({ cookies: () => cookieStore })
+  const supabase = await createSupabaseServerClient()
   const {
     data: { session },
   } = await supabase.auth.getSession()

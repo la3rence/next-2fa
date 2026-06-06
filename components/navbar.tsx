@@ -1,10 +1,9 @@
 import Link from "next/link"
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
-import { cookies } from "next/headers"
 import { LogOut, Shield } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { createSupabaseServerClient } from "@/lib/supabase-server"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,8 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 export default async function Navbar() {
-  const cookieStore = await cookies()
-  const supabase = createServerComponentClient({ cookies: () => cookieStore })
+  const supabase = await createSupabaseServerClient()
   const {
     data: { session },
   } = await supabase.auth.getSession()

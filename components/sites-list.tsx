@@ -41,7 +41,7 @@ function formatCreatedDate(value: string) {
 export default function SitesList({ sites }: { sites: Site[] }) {
   const [siteToDelete, setSiteToDelete] = useState<string | null>(null)
   const router = useRouter()
-  const supabase = createClientComponentClient()
+  const supabase = createClientComponentClient({ supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY })
 
   const handleDelete = async () => {
     if (!siteToDelete) return

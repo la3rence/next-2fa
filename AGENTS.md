@@ -31,5 +31,5 @@
 - Keep diffs focused; refactors and feature work should be separate PRs when possible.
 
 ## Security & Configuration Tips
-- Copy `.env.example` to `.env` and fill `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`; never commit secrets.
+- Copy `.env.example` to `.env` and fill `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (`sb_publishable_...`); never commit secrets and never expose a secret key (`sb_secret_...`) via a `NEXT_PUBLIC_` variable.
 - If recording UI media, scrub any real accounts or codes. Rotate keys if they were exposed during debugging.

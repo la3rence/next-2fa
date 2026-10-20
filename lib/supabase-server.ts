@@ -13,15 +13,25 @@ function createCookieGetter(cookieStore: CookieStore) {
 export async function createSupabaseServerClient<Database = any>() {
   const cookieStore = await cookies()
 
-  return createServerComponentClient<Database>({
-    cookies: createCookieGetter(cookieStore),
-  })
+  return createServerComponentClient<Database>(
+    {
+      cookies: createCookieGetter(cookieStore),
+    },
+    {
+      supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    }
+  )
 }
 
 export async function createSupabaseRouteClient<Database = any>() {
   const cookieStore = await cookies()
 
-  return createRouteHandlerClient<Database>({
-    cookies: createCookieGetter(cookieStore),
-  })
+  return createRouteHandlerClient<Database>(
+    {
+      cookies: createCookieGetter(cookieStore),
+    },
+    {
+      supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    }
+  )
 }

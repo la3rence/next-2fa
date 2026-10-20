@@ -35,7 +35,7 @@ export default function SiteForm({
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  const supabase = createClientComponentClient()
+  const supabase = createClientComponentClient({ supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
